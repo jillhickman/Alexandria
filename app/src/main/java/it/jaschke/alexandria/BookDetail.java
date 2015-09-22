@@ -39,11 +39,12 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mShareIntent = new Intent(Intent.ACTION_SEND);
         mShareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         mShareIntent.setType("text/plain");
         mShareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text) + bookTitle);
-        setHasOptionsMenu(true);
+//        setHasOptionsMenu(true);
 //        setRetainInstance(true);
     }
 

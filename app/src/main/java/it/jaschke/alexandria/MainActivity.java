@@ -57,6 +57,12 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         // Set up the drawer.
         navigationDrawerFragment.setUp(R.id.navigation_drawer,
                     (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        //This code pops the Book Detail fragment off the back stack so it does not create 2 share
+        //icons with the 2 detail book views. It just goes to the book list on orientation change.
+        if(savedInstanceState != null && findViewById(R.id.right_container) !=null){
+            getSupportFragmentManager().popBackStack("Book Detail", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
     }
 
     @Override
