@@ -148,7 +148,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         int id = R.id.container;
         if(findViewById(R.id.right_container) != null){
             id = R.id.right_container;
-//            getSupportFragmentManager().popBackStack("Book Detail", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getSupportFragmentManager().popBackStack("Book Detail", FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
         getSupportFragmentManager().beginTransaction()
                 .replace(id, fragment)
@@ -178,7 +178,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     @Override
     public void onBackPressed() {
-        if(getSupportFragmentManager().getBackStackEntryCount()<2){
+        if(getSupportFragmentManager().getBackStackEntryCount()<1){
             finish();
         }
         super.onBackPressed();
