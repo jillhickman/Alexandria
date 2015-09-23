@@ -82,13 +82,21 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 nextFragment = new ListOfBooks();
                 break;
             case 1:
+                //Clear the member variable so that it doesn't restore the book detail
+                //Do not want to restore the book detail when app resumes
+                mBookEan = "";
                 nextFragment = new AddBook();
                 break;
             case 2:
+                //Clear the member variable so that it doesn't restore the book detail
+                //Do not want to restore the book detail when app resumes
+                mBookEan = "";
                 nextFragment = new About();
                 break;
 
         }
+        //Pop the back stack so it can start a new one
+        getSupportFragmentManager().popBackStack("Book Detail", FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
         fragmentManager.beginTransaction()
                 .replace(R.id.container, nextFragment)
