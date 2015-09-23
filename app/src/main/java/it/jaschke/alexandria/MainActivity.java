@@ -93,9 +93,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 mBookEan = "";
                 nextFragment = new About();
                 break;
-
         }
-        //Pop the back stack so it can start a new one
+        //Pop the back stack so it does not contains multiple book detail
         getSupportFragmentManager().popBackStack("Book Detail", FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
         fragmentManager.beginTransaction()
@@ -129,11 +128,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         return super.onCreateOptionsMenu(menu);
     }
 
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        super.onConfigurationChanged(newConfig);
-//        invalidateOptionsMenu();
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -165,18 +159,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         mBookEan = ean;
         showBookBio(args);
 
-//        BookDetail fragment = new BookDetail();
-//        fragment.setArguments(args);
-//
-//        int id = R.id.container;
-//        if(findViewById(R.id.right_container) != null){
-//            id = R.id.right_container;
-//            getSupportFragmentManager().popBackStack("Book Detail", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-//        }
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(id, fragment)
-//                .addToBackStack("Book Detail")
-//                .commit();
     }
 
     //Method that shows the book bio
@@ -205,9 +187,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
-//    public void goBack(View view){
-//        getSupportFragmentManager().popBackStack();
-//    }
 
     private boolean isTablet() {
         return (getApplicationContext().getResources().getConfiguration().screenLayout
@@ -240,11 +219,14 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     protected void onResume() {
         super.onResume();
 
-        //If the mBookEan is not empty, get the bundle and showBook
-        if (!TextUtils.isEmpty(mBookEan)){
-            Bundle bundle = new Bundle();
-            bundle.putString(BookDetail.EAN_KEY, mBookEan);
-            showBookBio(bundle);
+        //Only get the book detail for tablet since phone has book detail already saved
+        if(isTablet()){
+            //If the mBookEan is not empty, get the bundle and showBook
+            if (!TextUtils.isEmpty(mBookEan)){
+                Bundle bundle = new Bundle();
+                bundle.putString(BookDetail.EAN_KEY, mBookEan);
+                showBookBio(bundle);
+            }
         }
     }
 
