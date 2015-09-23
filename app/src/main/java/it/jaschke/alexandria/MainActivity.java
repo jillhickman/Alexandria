@@ -12,6 +12,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -30,11 +31,15 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence title;
+
+    public static String mBookEan = "";
+    public static String BOOK_KEY = "book bio";
     public static boolean IS_TABLET = false;
     private BroadcastReceiver messageReciever;
 
     public static final String MESSAGE_EVENT = "MESSAGE_EVENT";
     public static final String MESSAGE_KEY = "MESSAGE_EXTRA";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,19 +153,39 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         Bundle args = new Bundle();
         args.putString(BookDetail.EAN_KEY, ean);
 
+        //Setting the mBookEan to the selected book so it can be saved out
+        mBookEan = ean;
+        showBookBio(args);
+
+//        BookDetail fragment = new BookDetail();
+//        fragment.setArguments(args);
+//
+//        int id = R.id.container;
+//        if(findViewById(R.id.right_container) != null){
+//            id = R.id.right_container;
+//            getSupportFragmentManager().popBackStack("Book Detail", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//        }
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(id, fragment)
+//                .addToBackStack("Book Detail")
+//                .commit();
+    }
+
+    //Method that shows the book bio
+    private  void showBookBio(Bundle bundle){
         BookDetail fragment = new BookDetail();
-        fragment.setArguments(args);
+        fragment.setArguments(bundle);
 
         int id = R.id.container;
         if(findViewById(R.id.right_container) != null){
             id = R.id.right_container;
-            getSupportFragmentManager().popBackStack("Book Detail", FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
+        //Pop the book detail before adding another book detail
+        getSupportFragmentManager().popBackStack("Book Detail", FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getSupportFragmentManager().beginTransaction()
                 .replace(id, fragment)
                 .addToBackStack("Book Detail")
                 .commit();
-
     }
 
     private class MessageReciever extends BroadcastReceiver {
@@ -188,6 +213,31 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             finish();
         }
         super.onBackPressed();
+    }
+    /**Handle the saving and restoring of the bundle. Override the 3 methods**/
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(BOOK_KEY, mBookEan);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        //onRestoreInstanceState is called if there is a saved state to restore
+        mBookEan = savedInstanceState.getString(BOOK_KEY);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //If the mBookEan is not empty, get the bundle and showBook
+        if (!TextUtils.isEmpty(mBookEan)){
+            Bundle bundle = new Bundle();
+            bundle.putString(BookDetail.EAN_KEY, mBookEan);
+            showBookBio(bundle);
+        }
     }
 
 
