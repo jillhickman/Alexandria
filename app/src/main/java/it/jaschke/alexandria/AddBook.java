@@ -76,26 +76,49 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             @Override
             public void afterTextChanged(Editable s) {
                 String ean = s.toString();
-                if (Utility.isNetworkAvailable(getActivity())) {
+
                     //catch isbn10 numbers
                     if (ean.length() == 10 && !ean.startsWith("978")) {
                         ean = "978" + ean;
                     }
                     if (ean.length() < 13) {
-//                        clearFields();
                         return;
                     }
+                    if (Utility.isNetworkAvailable(getActivity())){
                     //Once we have an ISBN, start a book intent
                     Intent bookIntent = new Intent(getActivity(), BookService.class);
                     bookIntent.putExtra(BookService.EAN, ean);
                     bookIntent.setAction(BookService.FETCH_BOOK);
                     getActivity().startService(bookIntent);
                     AddBook.this.restartLoader();
-                } else {
-                    //No internet, show toast.
-                    Toast.makeText(getActivity(), R.string.internet_toast_message, Toast.LENGTH_LONG).show();
-                }
-//                clearField();
+                    }else {
+                        //No internet, show toast.
+                        Toast.makeText(getActivity(), R.string.internet_toast_message, Toast.LENGTH_SHORT).show();
+                    }
+
+
+
+
+
+//                String ean = s.toString();
+//                if (Utility.isNetworkAvailable(getActivity())) {
+//                    //catch isbn10 numbers
+//                    if (ean.length() == 10 && !ean.startsWith("978")) {
+//                        ean = "978" + ean;
+//                    }
+//                    if (ean.length() < 13) {
+//                        return;
+//                    }
+//                    //Once we have an ISBN, start a book intent
+//                    Intent bookIntent = new Intent(getActivity(), BookService.class);
+//                    bookIntent.putExtra(BookService.EAN, ean);
+//                    bookIntent.setAction(BookService.FETCH_BOOK);
+//                    getActivity().startService(bookIntent);
+//                    AddBook.this.restartLoader();
+//                } else {
+//                    //No internet, show toast.
+//                    Toast.makeText(getActivity(), R.string.internet_toast_message, Toast.LENGTH_LONG).show();
+//                }
 
             }
         });
@@ -140,14 +163,11 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         if(savedInstanceState!=null){
             mSuccesfulEan = savedInstanceState.getString(SUCCESSFUL_EAN);
             ean.setText(savedInstanceState.getString(EAN_CONTENT));
-//            ean.setHint("");
+            //We call initLoader after an orientation change, we will get an onLoadFinished call
+            // right away because the data is already loaded.
             getLoaderManager().initLoader(LOADER_ID, null, this);
 
         }
-        //Loader manager is initialized to get updates on any changes.
-        //Without this, can't get any changes.
-//        getLoaderManager().initLoader(1, null, this);
-//        restartLoader();
         return rootView;
     }
 
@@ -175,31 +195,9 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 //No internet, show toast.
                 Toast.makeText(getActivity(), R.string.internet_toast_message, Toast.LENGTH_LONG).show();
             }
-//            clearField();
         }
 
-//        if (ean != null && (!TextUtils.isEmpty(ean.getText().toString()))){
-//            String text = ean.getText().toString();
-//            if (Utility.isNetworkAvailable(getActivity())) {
-//                //catch isbn10 numbers
-//                if (text.length() == 10 && !text.startsWith("978")) {
-//                    text = "978" + text;
-//                }
-//                if (text.length() < 13) {
-//                    return;
-//                }
-//                //Once we have an ISBN, start a book intent
-//                Intent bookIntent = new Intent(getActivity(), BookService.class);
-//                bookIntent.putExtra(BookService.EAN, text);
-//                bookIntent.setAction(BookService.FETCH_BOOK);
-//                getActivity().startService(bookIntent);
-//                AddBook.this.restartLoader();
-//            } else {
-//                //No internet, show toast.
-//                Toast.makeText(getActivity(), R.string.internet_toast_message, Toast.LENGTH_LONG).show();
-//            }
-////            clearField();
-//        }
+
     }
 
     private void restartLoader(){
@@ -228,6 +226,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
         if (!data.moveToFirst()) {
+//            clearFields();
             return;
         }
         mSuccesfulEan = ean.getText().toString();
@@ -260,16 +259,16 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
 
     }
-//
-//    private void clearFields(){
-//        ((TextView) rootView.findViewById(R.id.bookTitle)).setText("");
-//        ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText("");
-//        ((TextView) rootView.findViewById(R.id.authors)).setText("");
-//        ((TextView) rootView.findViewById(R.id.categories)).setText("");
-//        rootView.findViewById(R.id.bookCover).setVisibility(View.INVISIBLE);
-//        rootView.findViewById(R.id.save_button).setVisibility(View.INVISIBLE);
-//        rootView.findViewById(R.id.delete_button).setVisibility(View.INVISIBLE);
-//    }
+
+    private void clearFields(){
+        ((TextView) rootView.findViewById(R.id.bookTitle)).setText("");
+        ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText("");
+        ((TextView) rootView.findViewById(R.id.authors)).setText("");
+        ((TextView) rootView.findViewById(R.id.categories)).setText("");
+        rootView.findViewById(R.id.bookCover).setVisibility(View.INVISIBLE);
+        rootView.findViewById(R.id.save_button).setVisibility(View.INVISIBLE);
+        rootView.findViewById(R.id.delete_button).setVisibility(View.INVISIBLE);
+    }
 
 
     private void clearField(){
