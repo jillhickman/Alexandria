@@ -160,6 +160,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         showBookBio(args);
 
     }
+    //Method that clears the book Ean. Use in BookDetail when a book is deleted
+    public void clearBookEan(){
+          mBookEan = "";
+    }
+
 
     //Method that shows the book bio
     private  void showBookBio(Bundle bundle){

@@ -72,6 +72,10 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
                 bookIntent.setAction(BookService.DELETE_BOOK);
                 getActivity().startService(bookIntent);
                 getActivity().getSupportFragmentManager().popBackStack();
+                //Called the clearBookEan so that if there is a orientation change it doesn't
+                //save the deleted book
+                MainActivity activity = (MainActivity) getActivity();
+                activity.clearBookEan();
             }
         });
         return rootView;
