@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,6 +74,9 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
                 }
             }
         });
+        //Loader manager is initialized to get updates on any changes.
+        //Without this, can't get any changes.
+        getLoaderManager().initLoader(1, null, this);
 
         return rootView;
     }
