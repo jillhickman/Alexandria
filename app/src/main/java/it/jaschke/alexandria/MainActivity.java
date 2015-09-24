@@ -162,7 +162,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     }
     //Method that clears the book Ean. Use in BookDetail when a book is deleted
     public void clearBookEan(){
-          mBookEan = "";
+        mBookEan = "";
     }
 
 

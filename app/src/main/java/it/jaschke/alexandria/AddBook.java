@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -70,13 +71,13 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
             @Override
             public void afterTextChanged(Editable s) {
-                String ean =s.toString();
-                if (Utility.isNetworkAvailable(getActivity())){
+                String ean = s.toString();
+                if (Utility.isNetworkAvailable(getActivity())) {
                     //catch isbn10 numbers
-                    if(ean.length()==10 && !ean.startsWith("978")){
-                        ean="978"+ean;
+                    if (ean.length() == 10 && !ean.startsWith("978")) {
+                        ean = "978" + ean;
                     }
-                    if(ean.length()<13){
+                    if (ean.length() < 13) {
 //                        clearFields();
                         return;
                     }
@@ -86,10 +87,11 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     bookIntent.setAction(BookService.FETCH_BOOK);
                     getActivity().startService(bookIntent);
                     AddBook.this.restartLoader();
-                }else {
+                } else {
                     //No internet, show toast.
                     Toast.makeText(getActivity(), R.string.internet_toast_message, Toast.LENGTH_LONG).show();
                 }
+//                clearField();
 
             }
         });
@@ -133,10 +135,40 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
         if(savedInstanceState!=null){
             ean.setText(savedInstanceState.getString(EAN_CONTENT));
-            ean.setHint("");
+//            ean.setHint("");
         }
-
+        //Loader manager is initialized to get updates on any changes.
+        //Without this, can't get any changes.
+//        getLoaderManager().initLoader(1, null, this);
+//        restartLoader();
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (ean != null && (!TextUtils.isEmpty(ean.getText().toString()))){
+            String text = ean.getText().toString();
+            if (Utility.isNetworkAvailable(getActivity())) {
+                //catch isbn10 numbers
+                if (text.length() == 10 && !text.startsWith("978")) {
+                    text = "978" + text;
+                }
+                if (text.length() < 13) {
+                    return;
+                }
+                //Once we have an ISBN, start a book intent
+                Intent bookIntent = new Intent(getActivity(), BookService.class);
+                bookIntent.putExtra(BookService.EAN, text);
+                bookIntent.setAction(BookService.FETCH_BOOK);
+                getActivity().startService(bookIntent);
+                AddBook.this.restartLoader();
+            } else {
+                //No internet, show toast.
+                Toast.makeText(getActivity(), R.string.internet_toast_message, Toast.LENGTH_LONG).show();
+            }
+//            clearField();
+        }
     }
 
     private void restartLoader(){
@@ -195,15 +227,20 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
 
     }
+//
+//    private void clearFields(){
+//        ((TextView) rootView.findViewById(R.id.bookTitle)).setText("");
+//        ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText("");
+//        ((TextView) rootView.findViewById(R.id.authors)).setText("");
+//        ((TextView) rootView.findViewById(R.id.categories)).setText("");
+//        rootView.findViewById(R.id.bookCover).setVisibility(View.INVISIBLE);
+//        rootView.findViewById(R.id.save_button).setVisibility(View.INVISIBLE);
+//        rootView.findViewById(R.id.delete_button).setVisibility(View.INVISIBLE);
+//    }
 
-    private void clearFields(){
-        ((TextView) rootView.findViewById(R.id.bookTitle)).setText("");
-        ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText("");
-        ((TextView) rootView.findViewById(R.id.authors)).setText("");
-        ((TextView) rootView.findViewById(R.id.categories)).setText("");
-        rootView.findViewById(R.id.bookCover).setVisibility(View.INVISIBLE);
-        rootView.findViewById(R.id.save_button).setVisibility(View.INVISIBLE);
-        rootView.findViewById(R.id.delete_button).setVisibility(View.INVISIBLE);
+
+    private void clearField(){
+        ean.setText("");
     }
 
     @Override
