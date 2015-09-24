@@ -30,6 +30,8 @@ import it.jaschke.alexandria.services.Utility;
 public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "INTENT_TO_SCAN_ACTIVITY";
     private EditText ean;
+    private String mSuccesfulEan;
+    private final String SUCCESSFUL_EAN = "succssfulEan";
     private final int LOADER_ID = 1;
     private View rootView;
     private final String EAN_CONTENT="eanContent";
@@ -47,6 +49,9 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        if(mSuccesfulEan !=null){
+            outState.putString(SUCCESSFUL_EAN, mSuccesfulEan);
+        }
         if(ean!=null) {
             outState.putString(EAN_CONTENT, ean.getText().toString());
         }
@@ -134,6 +139,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         });
 
         if(savedInstanceState!=null){
+            mSuccesfulEan = savedInstanceState.getString(SUCCESSFUL_EAN);
             ean.setText(savedInstanceState.getString(EAN_CONTENT));
 //            ean.setHint("");
         }
@@ -199,6 +205,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         if (!data.moveToFirst()) {
             return;
         }
+        mSuccesfulEan = ean.getText().toString();
+        clearField();
 
         String bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
         ((TextView) rootView.findViewById(R.id.bookTitle)).setText(bookTitle);
