@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.BookService;
 import it.jaschke.alexandria.services.DownloadImage;
@@ -142,6 +141,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             mSuccesfulEan = savedInstanceState.getString(SUCCESSFUL_EAN);
             ean.setText(savedInstanceState.getString(EAN_CONTENT));
 //            ean.setHint("");
+            getLoaderManager().initLoader(LOADER_ID, null, this);
+
         }
         //Loader manager is initialized to get updates on any changes.
         //Without this, can't get any changes.
@@ -153,8 +154,9 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     @Override
     public void onResume() {
         super.onResume();
-        if (ean != null && (!TextUtils.isEmpty(ean.getText().toString()))){
-            String text = ean.getText().toString();
+
+        if (!TextUtils.isEmpty(mSuccesfulEan)){
+            String text = mSuccesfulEan;
             if (Utility.isNetworkAvailable(getActivity())) {
                 //catch isbn10 numbers
                 if (text.length() == 10 && !text.startsWith("978")) {
@@ -175,6 +177,29 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             }
 //            clearField();
         }
+
+//        if (ean != null && (!TextUtils.isEmpty(ean.getText().toString()))){
+//            String text = ean.getText().toString();
+//            if (Utility.isNetworkAvailable(getActivity())) {
+//                //catch isbn10 numbers
+//                if (text.length() == 10 && !text.startsWith("978")) {
+//                    text = "978" + text;
+//                }
+//                if (text.length() < 13) {
+//                    return;
+//                }
+//                //Once we have an ISBN, start a book intent
+//                Intent bookIntent = new Intent(getActivity(), BookService.class);
+//                bookIntent.putExtra(BookService.EAN, text);
+//                bookIntent.setAction(BookService.FETCH_BOOK);
+//                getActivity().startService(bookIntent);
+//                AddBook.this.restartLoader();
+//            } else {
+//                //No internet, show toast.
+//                Toast.makeText(getActivity(), R.string.internet_toast_message, Toast.LENGTH_LONG).show();
+//            }
+////            clearField();
+//        }
     }
 
     private void restartLoader(){
