@@ -138,9 +138,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         if(savedInstanceState!=null){
             mSuccesfulEan = savedInstanceState.getString(SUCCESSFUL_EAN);
             ean.setText(savedInstanceState.getString(EAN_CONTENT));
-            //We call initLoader after an orientation change, we will get an onLoadFinished call
-            // right away because the data is already loaded.
-            getLoaderManager().initLoader(LOADER_ID, null, this);
+            
 
         }
         return rootView;
@@ -151,26 +149,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         super.onResume();
 
         if (!TextUtils.isEmpty(mSuccesfulEan)){
-            getLoaderManager().initLoader(LOADER_ID, null, this);
-            String text = mSuccesfulEan;
-            if (Utility.isNetworkAvailable(getActivity())) {
-                //catch isbn10 numbers
-                if (text.length() == 10 && !text.startsWith("978")) {
-                    text = "978" + text;
-                }
-                if (text.length() < 13) {
-                    return;
-                }
-                //Once we have an ISBN, start a book intent
-                Intent bookIntent = new Intent(getActivity(), BookService.class);
-                bookIntent.putExtra(BookService.EAN, text);
-                bookIntent.setAction(BookService.FETCH_BOOK);
-                getActivity().startService(bookIntent);
-//                AddBook.this.restartLoader();
-            } else {
-                //No internet, show toast.
-                Toast.makeText(getActivity(), R.string.internet_toast_message, Toast.LENGTH_LONG).show();
-            }
+
             ean.setText(mSuccesfulEan);
 
         }
@@ -235,6 +214,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
         rootView.findViewById(R.id.save_button).setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.delete_button).setVisibility(View.VISIBLE);
+
+        getLoaderManager().destroyLoader(LOADER_ID);
 
     }
 
