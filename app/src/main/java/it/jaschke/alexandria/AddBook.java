@@ -63,6 +63,9 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         rootView = inflater.inflate(R.layout.fragment_add_book, container, false);
         ean = (EditText) rootView.findViewById(R.id.ean);
 
+        rootView.findViewById(R.id.save_button).setVisibility(View.INVISIBLE);
+        rootView.findViewById(R.id.delete_button).setVisibility(View.INVISIBLE);
+
         ean.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -117,28 +120,28 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             }
         });
 
-        rootView.findViewById(R.id.save_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ean.setText("");
-            }
-        });
+//        rootView.findViewById(R.id.save_button).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                ean.setText("");
+//            }
+//        });
 
-        rootView.findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent bookIntent = new Intent(getActivity(), BookService.class);
-                bookIntent.putExtra(BookService.EAN, ean.getText().toString());
-                bookIntent.setAction(BookService.DELETE_BOOK);
-                getActivity().startService(bookIntent);
-                ean.setText("");
-            }
-        });
+//        rootView.findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent bookIntent = new Intent(getActivity(), BookService.class);
+//                bookIntent.putExtra(BookService.EAN, ean.getText().toString());
+//                bookIntent.setAction(BookService.DELETE_BOOK);
+//                getActivity().startService(bookIntent);
+//                ean.setText("");
+//            }
+//        });
 
         if(savedInstanceState!=null){
             mSuccesfulEan = savedInstanceState.getString(SUCCESSFUL_EAN);
             ean.setText(savedInstanceState.getString(EAN_CONTENT));
-            
+
 
         }
         return rootView;
@@ -212,8 +215,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
         ((TextView) rootView.findViewById(R.id.categories)).setText(categories);
 
-        rootView.findViewById(R.id.save_button).setVisibility(View.VISIBLE);
-        rootView.findViewById(R.id.delete_button).setVisibility(View.VISIBLE);
+
 
         getLoaderManager().destroyLoader(LOADER_ID);
 
@@ -222,16 +224,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     @Override
     public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
 
-    }
-
-    private void clearFields(){
-        ((TextView) rootView.findViewById(R.id.bookTitle)).setText("");
-        ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText("");
-        ((TextView) rootView.findViewById(R.id.authors)).setText("");
-        ((TextView) rootView.findViewById(R.id.categories)).setText("");
-        rootView.findViewById(R.id.bookCover).setVisibility(View.INVISIBLE);
-        rootView.findViewById(R.id.save_button).setVisibility(View.INVISIBLE);
-        rootView.findViewById(R.id.delete_button).setVisibility(View.INVISIBLE);
     }
 
 
