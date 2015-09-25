@@ -63,8 +63,10 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         rootView = inflater.inflate(R.layout.fragment_add_book, container, false);
         ean = (EditText) rootView.findViewById(R.id.ean);
 
-        rootView.findViewById(R.id.save_button).setVisibility(View.INVISIBLE);
-        rootView.findViewById(R.id.delete_button).setVisibility(View.INVISIBLE);
+//        rootView.findViewById(R.id.save_button).setVisibility(View.INVISIBLE);
+//        rootView.findViewById(R.id.delete_button).setVisibility(View.INVISIBLE);
+
+//        rootView.findViewById(R.id.confirm_layout).setVisibility(View.GONE);
 
         ean.addTextChangedListener(new TextWatcher() {
             @Override
