@@ -78,49 +78,24 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             public void afterTextChanged(Editable s) {
                 String ean = s.toString();
 
-                    //catch isbn10 numbers
-                    if (ean.length() == 10 && !ean.startsWith("978")) {
-                        ean = "978" + ean;
-                    }
-                    if (ean.length() < 13) {
-                        return;
-                    }
-                    if (Utility.isNetworkAvailable(getActivity())){
+                //catch isbn10 numbers
+                if (ean.length() == 10 && !ean.startsWith("978")) {
+                    ean = "978" + ean;
+                }
+                if (ean.length() < 13) {
+                    return;
+                }
+                if (Utility.isNetworkAvailable(getActivity())) {
                     //Once we have an ISBN, start a book intent
                     Intent bookIntent = new Intent(getActivity(), BookService.class);
                     bookIntent.putExtra(BookService.EAN, ean);
                     bookIntent.setAction(BookService.FETCH_BOOK);
                     getActivity().startService(bookIntent);
                     AddBook.this.restartLoader();
-                    }else {
-                        //No internet, show toast.
-                        Toast.makeText(getActivity(), R.string.internet_toast_message, Toast.LENGTH_SHORT).show();
-                    }
-
-
-
-
-
-//                String ean = s.toString();
-//                if (Utility.isNetworkAvailable(getActivity())) {
-//                    //catch isbn10 numbers
-//                    if (ean.length() == 10 && !ean.startsWith("978")) {
-//                        ean = "978" + ean;
-//                    }
-//                    if (ean.length() < 13) {
-//                        return;
-//                    }
-//                    //Once we have an ISBN, start a book intent
-//                    Intent bookIntent = new Intent(getActivity(), BookService.class);
-//                    bookIntent.putExtra(BookService.EAN, ean);
-//                    bookIntent.setAction(BookService.FETCH_BOOK);
-//                    getActivity().startService(bookIntent);
-//                    AddBook.this.restartLoader();
-//                } else {
-//                    //No internet, show toast.
-//                    Toast.makeText(getActivity(), R.string.internet_toast_message, Toast.LENGTH_LONG).show();
-//                }
-
+                } else {
+                    //No internet, show toast.
+                    Toast.makeText(getActivity(), R.string.internet_toast_message, Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -139,7 +114,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
-
             }
         });
 
@@ -177,6 +151,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         super.onResume();
 
         if (!TextUtils.isEmpty(mSuccesfulEan)){
+            getLoaderManager().initLoader(LOADER_ID, null, this);
             String text = mSuccesfulEan;
             if (Utility.isNetworkAvailable(getActivity())) {
                 //catch isbn10 numbers
@@ -191,11 +166,13 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 bookIntent.putExtra(BookService.EAN, text);
                 bookIntent.setAction(BookService.FETCH_BOOK);
                 getActivity().startService(bookIntent);
-                AddBook.this.restartLoader();
+//                AddBook.this.restartLoader();
             } else {
                 //No internet, show toast.
                 Toast.makeText(getActivity(), R.string.internet_toast_message, Toast.LENGTH_LONG).show();
             }
+            ean.setText(mSuccesfulEan);
+
         }
 
 
@@ -227,7 +204,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
         if (!data.moveToFirst()) {
-//            clearFields();
             return;
         }
         mSuccesfulEan = ean.getText().toString();
@@ -244,11 +220,10 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         ((TextView) rootView.findViewById(R.id.authors)).setLines(authorsArr.length);
         ((TextView) rootView.findViewById(R.id.authors)).setText(authors.replace(",","\n"));
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
-        if(Patterns.WEB_URL.matcher(imgUrl).matches()){
-//            new DownloadImage((ImageView) rootView.findViewById(R.id.bookCover)).execute(imgUrl);
+        if (Patterns.WEB_URL.matcher(imgUrl).matches()) {
             //Using Picasso to load images. Also added default placeholder image.
             ImageView bookImageView = (ImageView) rootView.findViewById(R.id.bookCover);
-            if (bookImageView != null){
+            if (bookImageView != null) {
                 Picasso.with(getActivity()).load(imgUrl).placeholder(R.drawable.ic_launcher).into(bookImageView);
                 rootView.findViewById(R.id.bookCover).setVisibility(View.VISIBLE);
             }
@@ -260,6 +235,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
         rootView.findViewById(R.id.save_button).setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.delete_button).setVisibility(View.VISIBLE);
+
     }
 
     @Override

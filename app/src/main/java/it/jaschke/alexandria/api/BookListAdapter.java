@@ -43,7 +43,7 @@ public class BookListAdapter extends CursorAdapter {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
         String imgUrl = cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
-//        new DownloadImage(viewHolder.bookCover).execute(imgUrl);
+
         //Using Picasso to load images. Also added default placeholder image.
         Picasso.with(context).load(imgUrl).placeholder(R.drawable.ic_launcher).into(viewHolder.bookCover);
 
