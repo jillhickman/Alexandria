@@ -1,7 +1,6 @@
 package it.jaschke.alexandria;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -29,7 +28,7 @@ import it.jaschke.alexandria.services.Utility;
 
 public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "INTENT_TO_SCAN_ACTIVITY";
-    private EditText ean;
+    private EditText mEan;
     private String mSuccesfulEan;
     private final String SUCCESSFUL_EAN = "succssfulEan";
     private final int LOADER_ID = 1;
@@ -41,7 +40,9 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     private String mScanFormat = "Format:";
     private String mScanContents = "Contents:";
 
-
+    static final int EAN_REQUEST = 1;  // The request code
+//    public static final int RESULT_OK = 1;
+    public static final String EAN_RESULTS_KEY = "eanResultsKey";
 
     public AddBook(){
     }
@@ -52,23 +53,35 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         if(mSuccesfulEan !=null){
             outState.putString(SUCCESSFUL_EAN, mSuccesfulEan);
         }
-        if(ean!=null) {
-            outState.putString(EAN_CONTENT, ean.getText().toString());
+        if(mEan !=null) {
+            outState.putString(EAN_CONTENT, mEan.getText().toString());
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == EAN_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                mEan.setText(data.getStringExtra(EAN_RESULTS_KEY));
+                mSuccesfulEan = data.getStringExtra(EAN_RESULTS_KEY);
+            }
+
+        }
+    }
+
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.fragment_add_book, container, false);
-        ean = (EditText) rootView.findViewById(R.id.ean);
+        mEan = (EditText) rootView.findViewById(R.id.ean);
 
 //        rootView.findViewById(R.id.save_button).setVisibility(View.INVISIBLE);
 //        rootView.findViewById(R.id.delete_button).setVisibility(View.INVISIBLE);
 
 //        rootView.findViewById(R.id.confirm_layout).setVisibility(View.GONE);
 
-        ean.addTextChangedListener(new TextWatcher() {
+        mEan.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 //no need
@@ -113,19 +126,26 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 // Hint: Use a Try/Catch block to handle the Intent dispatch gracefully, if you
                 // are using an external app.
                 //when you're done, remove the toast below.
-                Context context = getActivity();
-                CharSequence text = "This button should let you scan a book for its barcode!";
-                int duration = Toast.LENGTH_SHORT;
+                Intent scanIntent = new Intent(getActivity(), ScannerActivity.class);
+                startActivityForResult(scanIntent, EAN_REQUEST);
+                getLoaderManager().destroyLoader(LOADER_ID);
 
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
+
+
+
+//                Context context = getActivity();
+//                CharSequence text = "This button should let you scan a book for its barcode!";
+//                int duration = Toast.LENGTH_SHORT;
+//
+//                Toast toast = Toast.makeText(context, text, duration);
+//                toast.show();
             }
         });
 
 //        rootView.findViewById(R.id.save_button).setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
-//                ean.setText("");
+//                mEan.setText("");
 //            }
 //        });
 
@@ -133,16 +153,16 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 //            @Override
 //            public void onClick(View view) {
 //                Intent bookIntent = new Intent(getActivity(), BookService.class);
-//                bookIntent.putExtra(BookService.EAN, ean.getText().toString());
+//                bookIntent.putExtra(BookService.EAN, mEan.getText().toString());
 //                bookIntent.setAction(BookService.DELETE_BOOK);
 //                getActivity().startService(bookIntent);
-//                ean.setText("");
+//                mEan.setText("");
 //            }
 //        });
 
         if(savedInstanceState!=null){
             mSuccesfulEan = savedInstanceState.getString(SUCCESSFUL_EAN);
-            ean.setText(savedInstanceState.getString(EAN_CONTENT));
+            mEan.setText(savedInstanceState.getString(EAN_CONTENT));
 
 
         }
@@ -155,7 +175,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
         if (!TextUtils.isEmpty(mSuccesfulEan)){
 
-            ean.setText(mSuccesfulEan);
+            mEan.setText(mSuccesfulEan);
 
         }
 
@@ -168,10 +188,10 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     @Override
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if(ean.getText().length()==0){
+        if(mEan.getText().length()==0){
             return null;
         }
-        String eanStr= ean.getText().toString();
+        String eanStr= mEan.getText().toString();
         if(eanStr.length()==10 && !eanStr.startsWith("978")){
             eanStr="978"+eanStr;
         }
@@ -190,7 +210,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         if (!data.moveToFirst()) {
             return;
         }
-        mSuccesfulEan = ean.getText().toString();
+        mSuccesfulEan = mEan.getText().toString();
         clearField();
 
         String bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
@@ -230,7 +250,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
 
     private void clearField(){
-        ean.setText("");
+        mEan.setText("");
     }
 
     @Override

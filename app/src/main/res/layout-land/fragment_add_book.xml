@@ -14,8 +14,8 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
-
             >
+
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -56,6 +56,7 @@
             android:layout_marginTop="10dp"
             android:layout_below="@id/search_layout"
             android:layout_centerHorizontal="true"
+            tools:text="Book Title"
             />
 
         <TextView
@@ -66,6 +67,7 @@
             android:layout_alignLeft="@+id/bookTitle"
             android:layout_alignStart="@+id/bookTitle"
             android:layout_marginTop="10dp"
+            tools:text="Book Subtitle"
             />
 
         <ImageView
@@ -79,7 +81,7 @@
             android:layout_alignLeft="@+id/bookSubTitle"
             android:layout_alignStart="@+id/bookSubTitle"
             android:layout_marginTop="10dp"
-
+            tools:text="Content description"
             />
 
         <TextView
@@ -90,6 +92,7 @@
             android:layout_marginLeft="25dp"
             android:layout_marginStart="25dp"
             android:layout_centerInParent="true"
+            tools:text="Author"
             />
 
         <TextView
@@ -101,7 +104,7 @@
             android:layout_alignLeft="@+id/bookCover"
             android:layout_alignStart="@+id/bookCover"
             android:layout_marginTop="10dp"
-
+            tools:text="Some kind of book info"
             />
 
         <LinearLayout

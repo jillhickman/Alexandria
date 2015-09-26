@@ -26,8 +26,9 @@
     <string name="back_button">go back</string>
     <string name="share_text">A must read book: </string>
 
-    <!--Toast message if no internet connection-->
+    <!--Toast messages-->
     <string name="internet_toast_message">No internet connectivity found</string>
+    <string name="scan_toast_message">Successfully Scanned</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="about_text">This application gets book information from a Google API. All titles, cover images, and author information come from there.
