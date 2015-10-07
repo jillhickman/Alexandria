@@ -92,40 +92,7 @@
             android:layout_alignStart="@+id/bookCover"
             android:layout_marginTop="10dp"/>
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            >
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:contentDescription="@string/cancel_button"
-                android:layout_weight="1"
-                android:src="@drawable/ic_action_discard"
-                style="?android:attr/buttonBarButtonStyle"
-                android:id="@+id/delete_button"
-                android:visibility="invisible"
-                />
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:contentDescription="@string/ok_button"
-                android:text="@string/ok_button"
-                android:layout_weight="1"
-                android:id="@+id/save_button"
-                android:visibility="invisible"
-                android:src="@drawable/ic_action_accept"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_gravity="bottom"
-                />
-
-
-        </LinearLayout>
 
     </RelativeLayout>
 </FrameLayout>
