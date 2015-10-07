@@ -133,11 +133,9 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             }
         });
 
-
         if(savedInstanceState!=null){
             mSuccesfulEan = savedInstanceState.getString(SUCCESSFUL_EAN);
             mEan.setText(savedInstanceState.getString(EAN_CONTENT));
-
 
         }
         return rootView;
@@ -152,8 +150,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             mEan.setText(mSuccesfulEan);
 
         }
-
-
     }
 
     private void restartLoader(){
@@ -210,13 +206,10 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 Picasso.with(getActivity()).load(imgUrl).placeholder(R.drawable.ic_launcher).into(bookImageView);
                 rootView.findViewById(R.id.bookCover).setVisibility(View.VISIBLE);
             }
-
         }
 
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
         ((TextView) rootView.findViewById(R.id.categories)).setText(categories);
-
-
 
         getLoaderManager().destroyLoader(LOADER_ID);
 
@@ -224,7 +217,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     @Override
     public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
-
     }
 
 

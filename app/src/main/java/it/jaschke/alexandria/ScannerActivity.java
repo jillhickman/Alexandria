@@ -33,11 +33,6 @@ public class ScannerActivity extends Activity implements ZXingScannerView.Result
 
     @Override
     public void handleResult(Result rawResult) {
-        // Do something with the result here
-//        Toast.makeText(this, R.string.scan_toast_message, Toast.LENGTH_SHORT).show();
-//
-//        Log.v(TAG, rawResult.getText()); // Prints scan results
-//        Log.v(TAG, rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
 
         Intent resultIntent = new Intent();
         resultIntent.putExtra(AddBook.EAN_RESULTS_KEY,rawResult.getText() );
