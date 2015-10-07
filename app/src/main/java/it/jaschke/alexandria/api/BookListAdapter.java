@@ -4,6 +4,7 @@ package it.jaschke.alexandria.api;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,10 +43,15 @@ public class BookListAdapter extends CursorAdapter {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        String imgUrl = cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
 
-        //Using Picasso to load images. Also added default placeholder image.
-        Picasso.with(context).load(imgUrl).placeholder(R.drawable.ic_launcher).into(viewHolder.bookCover);
+        String imgUrl = cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
+        //Check to see if imageUrl is not empty. Using Picasso to load images,
+        //added default placeholder image if there is no image
+        if (!TextUtils.isEmpty(imgUrl)){
+            Picasso.with(context).load(imgUrl).placeholder(R.drawable.ic_launcher).into(viewHolder.bookCover);
+        }else {
+            Picasso.with(context).load(R.drawable.ic_launcher).into(viewHolder.bookCover);
+        }
 
         String bookTitle = cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
         viewHolder.bookTitle.setText(bookTitle);

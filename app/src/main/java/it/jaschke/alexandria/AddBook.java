@@ -130,35 +130,9 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 startActivityForResult(scanIntent, EAN_REQUEST);
                 getLoaderManager().destroyLoader(LOADER_ID);
 
-
-
-
-//                Context context = getActivity();
-//                CharSequence text = "This button should let you scan a book for its barcode!";
-//                int duration = Toast.LENGTH_SHORT;
-//
-//                Toast toast = Toast.makeText(context, text, duration);
-//                toast.show();
             }
         });
 
-//        rootView.findViewById(R.id.save_button).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                mEan.setText("");
-//            }
-//        });
-
-//        rootView.findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent bookIntent = new Intent(getActivity(), BookService.class);
-//                bookIntent.putExtra(BookService.EAN, mEan.getText().toString());
-//                bookIntent.setAction(BookService.DELETE_BOOK);
-//                getActivity().startService(bookIntent);
-//                mEan.setText("");
-//            }
-//        });
 
         if(savedInstanceState!=null){
             mSuccesfulEan = savedInstanceState.getString(SUCCESSFUL_EAN);
